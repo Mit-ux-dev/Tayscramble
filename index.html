@@ -151,16 +151,24 @@
         }
 
         /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #ff6f91;
-            color: white;
-            width: 100%;
-            margin-top: auto;
-            border-top: 2px solid #fff;
-        }
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #ff6f91;
+    color: white;
+    max-width: 100%; /* Prevent overflow */
+    box-sizing: border-box; /* Include padding in width */
+    margin-top: auto;
+    border-top: 2px solid #fff;
+}
 
+/* Media Query for Mobile */
+@media (max-width: 600px) {
+    footer {
+        padding: 10px; /* Reduced padding for mobile */
+    }
+}
+        
         /* Hide game elements initially */
         #game-elements, #scorecard, #pause-elements, #answers {
             display: none;
