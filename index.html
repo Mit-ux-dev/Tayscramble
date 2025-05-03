@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tayscramble</title>
+    <style>
+        /* CSS for the website */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #f9e9ec, #fff); /* Subtle gradient background */
+            color: #333;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background: linear-gradient(to bottom, #ff6f91, #f9e9ec);
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ff6f91; /* Decorative border */
+        }
+
+        header h1 {
+            font-size: 48px; /* Increased size */
+            color: #fff;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+        header p {
+            font-size: 20px; /* Increased size */
+            color: #fff;
+            margin: 5px 0 0;
+        }
+
+        /* Game Section */
+        section {
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 800px;
+            flex: 1; /* Allow section to grow */
+        }
+
+        section h2 {
+            color: #ff6f91;
+            text-align: center;
+            margin: 0 0 10px;
+            font-size: 28px;
+        }
+
+        #game {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+            text-align: center;
+            width: 600px; /* Fixed width */
+            min-height: 400px; /* Fixed minimum height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid #ff6f91; /* Decorative border */
+        }
+
+        #game-instructions {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #scrambled-word {
+            font-size: 24px;
+            color: #ff6f91;
+            margin: 10px 0;
+        }
+
+        #hint {
+            font-size: 18px;
+            color: #333; /* Black font for hint */
+            margin: 10px 0;
+        }
+
+        #user-input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            border: 2px solid #ff6f91;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        #submit-btn, #skip-word-btn, #play-now-btn, #restart-btn, #pause-btn, #continue-btn, #show-answers-btn, #back-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #ff6f91;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s; /* Smooth hover effect */
+        }
+
+        #submit-btn:hover, #skip-word-btn:hover, #play-now-btn:hover, #restart-btn:hover, #pause-btn:hover, #continue-btn:hover, #show-answers-btn:hover, #back-btn:hover {
+            background-color: #e55a7a;
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        #message {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        #score, #timer, #question-counter {
+            font-size: 20px;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        #scorecard, #answers {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #answers {
+            display: none;
+        }
+
+        #answers ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #answers li {
+            margin: 5px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #ff6f91;
+            color: white;
+            width: 100%;
+            margin-top: auto; /* Push footer to bottom */
+            border-top: 2px solid #fff; /* Decorative border */
+        }
+
+        /* Hide game elements initially */
+        #game-elements, #scorecard, #pause-elements, #answers {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <h1>Tayscramble</h1>
+        <p>Test your Swiftie knowledge with our fun word scramble game!</p>
+    </header>
+
+    <!-- Word Scramble Game Section -->
+    <section id="game-section">
+        <div id="game">
+            <h2>Tayscramble Game</h2>
+            <p id="game-instructions">Unscramble the Taylor Swift-related word within 1 minute to earn points! Answer 10 questions to see your score.</p>
+            <div id="game-elements">
+                <div id="score">Score: <span id="score-value">0</span></div>
+                <div id="question-counter">Question: <span id="question-number">1</span>/10</div>
+                <div id="timer">Time Left: <span id="time-left">60</span> seconds</div>
+                <div id="scrambled-word"></div>
+                <div id="hint"></div>
+                <input type="text" id="user-input" placeholder="Enter your guess">
+                <br>
+                <button id="submit-btn">Submit Guess</button>
+                <button id="skip-word-btn">Skip Word</button>
+                <button id="pause-btn">Pause</button>
+                <div id="message"></div>
+            </div>
+            <div id="pause-elements">
+                <button id="continue-btn">Continue</button>
+            </div>
+            <button id="play-now-btn">Play Now</button>
+            <div id="scorecard"></div>
+            <div id="answers"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <p>© 2025 Tayscramble. Made with 💖 for Swifties!</p>
+    </footer>
+
+    <script>
+        // JavaScript for the Word Scramble Game
+        const words = [
+            { word: "swiftie", hint: "A dedicated Taylor Swift fan" },
+            { word: "fearless", hint: "Her second album, released in 2008" },
+            { word: "red", hint: "Album with a color in the title" },
+            { word: "1989", hint: "Album named after her birth year" },
+            { word: "lover", hint: "Album with a romantic title" },
+            { word: "folklore", hint: "Indie-folk album from 2020" },
+            { word: "midnights", hint: "Album inspired by sleepless nights" },
+            { word: "reputation", hint: "Album with a bold, edgy vibe" },
+            { word: "evermore", hint: "Sister album to Folklore" },
+            { word: "speaknow", hint: "Album entirely written by Taylor" },
+            { word: "blankspace", hint: "Hit song from 1989" },
+            { word: "shakeitoff", hint: "Upbeat single from 1989" },
+            { word: "lovestory", hint: "Romeo and Juliet-inspired song" },
+            { word: "youbelongwithme", hint: "Song about unrequited love from Fearless" },
+            { word: "cardigan", hint: "Lead single from Folklore" },
+            { word: "willow", hint: "Lead single from Evermore" },
+            { word: "delicate", hint: "Song about a fragile romance from Reputation" },
+            { word: "antihero", hint: "Lead single from Midnights" },
+            { word: "alltoowell", hint: "Emotional 10-minute song from Red" },
+            { word: "enchanted", hint: "Romantic ballad from Speak Now" },
+            { word: "taylorsversion", hint: "Her re-recorded albums" },
+            { word: "erastour", hint: "Her record-breaking world tour" },
+            { word: "sparkle", hint: "Taylor loves things that do this" },
+            { word: "thirteen", hint: "Taylor's favorite number" },
+            { word: "nashville", hint: "City where Taylor started her career" },
+            { word: "badblood", hint: "Song about a feud from 1989" },
+            { word: "wildestdreams", hint: "Dreamy track from 1989" },
+            { word: "style", hint: "Song about a timeless romance from 1989" },
+            { word: "lookwhatyoumademedo", hint: "Lead single from Reputation" },
+            { word: "readyforit", hint: "Opening track from Reputation" },
+            { word: "cruelwinter", hint: "Song from Lover, often confused with a season" },
+            { word: "august", hint: "Song about a summer romance from Folklore" },
+            { word: "betty", hint: "Song from Folklore about a teenage love triangle" },
+            { word: "exile", hint: "Duet with Bon Iver from Folklore" },
+            { word: "lavenderhaze", hint: "Opening track from Midnights" },
+            { word: "karmaisabutterfly", hint: "Song from Midnights with a winged metaphor" },
+            { word: "mine", hint: "Lead single from Speak Now" },
+            { word: "easteregg", hint: "Hidden clues Taylor loves to leave for fans" },
+            { word: "snake", hint: "Symbol associated with her Reputation era" },
+            { word: "polaroid", hint: "Iconic aesthetic from the 1989 album" },
+            { word: "sparksfly", hint: "Upbeat love song from Speak Now" },
+            { word: "backtodecember", hint: "Apology song from Speak Now" },
+            { word: "mean", hint: "Song about overcoming critics from Speak Now" },
+            { word: "ours", hint: "Sweet love song from Speak Now" },
+            { word: "daylight", hint: "Closing track from Lover" },
+            { word: "thearcher", hint: "Introspective track from Lover" },
+            { word: "paperwings", hint: "Song from Lover about fragile dreams" },
+            { word: "mytearsricochet", hint: "Haunting track from Folklore" },
+            { word: "mirrorball", hint: "Song from Folklore about self-reflection" },
+            { word: "champagneproblems", hint: "Heartbreaking track from Evermore" },
+            { word: "goldrush", hint: "Dreamy song from Evermore" },
+            { word: "bejeweled", hint: "Sparkly song from Midnights" },
+            { word: "mastermind", hint: "Closing track from Midnights" },
+            { word: "wearehappy", hint: "Song from Red about a breakup" },
+            { word: "timmcgraw", hint: "Her debut single from 2006" },
+            { word: "cats", hint: "Taylor's pets, often featured in her life" },
+            { word: "heartbreak", hint: "Common theme in many of Taylor's songs" },
+            { word: "grammy", hint: "Award Taylor has won multiple times" },
+            { word: "scarf", hint: "Iconic item mentioned in All Too Well" },
+            { word: "folkloretriangle", hint: "Love triangle in Folklore's teenage songs" },
+            { word: "outofthewoods", hint: "Song from 1989 about a turbulent relationship" },
+            { word: "newromantics", hint: "Anthemic track from 1989" },
+            { word: "gorgeous", hint: "Flirty song from Reputation" },
+            { word: "callitwhatyouwant", hint: "Love song from Reputation" },
+            { word: "londonboy", hint: "Song from Lover inspired by a city" },
+            { word: "afterglow", hint: "Song from Lover about owning mistakes" },
+            { word: "the1", hint: "Opening track from Folklore" },
+            { word: "invisible", hint: "Song from Evermore about longing" },
+            { word: "tolerateit", hint: "Song from Evermore about unreciprocated love" },
+            { word: "snowonthebeach", hint: "Song from Midnights featuring Lana Del Rey" },
+            { word: "youreonyourownkid", hint: "Reflective track from Midnights" },
+            { word: "beginagain", hint: "Hopeful song from Red about new love" },
+            { word: "staystaystay", hint: "Playful love song from Red" },
+            { word: "teardropsonmyguitar", hint: "Early hit from her debut album" },
+            { word: "picturetoburn", hint: "Fiery song from her debut album" },
+            { word: "cowboylikeme", hint: "Song from Evermore about kindred spirits" },
+            { word: "closure", hint: "Song from Evermore about moving on" },
+            { word: "swiftmas", hint: "Taylor's holiday gift-giving tradition for fans" },
+            { word: "meredithgrey", hint: "Name of one of Taylor's cats" },
+            { word: "redlipstick", hint: "Taylor's signature makeup look" },
+            { word: "longlive", hint: "Song from Speak Now about shared memories" },
+            { word: "haunted", hint: "Dramatic track from Speak Now" },
+            { word: "iheartyou", hint: "Song from Lover with a question mark" },
+            { word: "seven", hint: "Nostalgic song from Folklore" },
+            { word: "hoax", hint: "Closing track from Folklore" },
+            { word: "maroon", hint: "Song from Midnights with a wine-colored hue" },
+            { word: "paris", hint: "Song from Midnights inspired by a city" },
+            { word: "stateofgrace", hint: "Opening track from Red" },
+            { word: "treacherous", hint: "Song from Red about a risky romance" },
+            { word: "shouldvesaidno", hint: "Song from her debut album about betrayal" },
+            { word: "ourstory", hint: "Song from her debut album about a small-town romance" },
+            { word: "babe", hint: "Song from Red featuring Sugarland" },
+            { word: "betterthanrevenge", hint: "Fiery track from Speak Now" },
+            { word: "clean", hint: "Closing track from 1989 about healing" },
+            { word: "thislovely", hint: "Song from 1989 about rekindled romance" },
+            { word: "getawaycar", hint: "Song from Reputation about a dramatic escape" },
+            { word: "dancingwithourhandstied", hint: "Song from Reputation about secret love" },
+            { word: "butterfly", hint: "Symbol often associated with Lover era" },
+            { word: "oliviabenson", hint: "Name of another one of Taylor's cats" }
+        ];
+
+        let currentWord = "";
+        let scrambledWord = "";
+        let score = 0;
+        let questionNumber = 1;
+        let correctAnswers = 0;
+        let timer;
+        let timeLeft = 60;
+        let usedWords = [];
+        let questionHistory = []; // Track questions and answers
+
+        // Elements
+        const gameElements = document.getElementById("game-elements");
+        const pauseElements = document.getElementById("pause-elements");
+        const playNowBtn = document.getElementById("play-now-btn");
+        const scrambledWordElement = document.getElementById("scrambled-word");
+        const hintElement = document.getElementById("hint");
+        const userInput = document.getElementById("user-input");
+        const submitBtn = document.getElementById("submit-btn");
+        const skipWordBtn = document.getElementById("skip-word-btn");
+        const pauseBtn = document.getElementById("pause-btn");
+        const continueBtn = document.getElementById("continue-btn");
+        const messageElement = document.getElementById("message");
+        const scoreElement = document.getElementById("score-value");
+        const questionNumberElement = document.getElementById("question-number");
+        const timeLeftElement = document.getElementById("time-left");
+        const scorecardElement = document.getElementById("scorecard");
+        const answersElement = document.getElementById("answers");
+        const gameInstructions = document.getElementById("game-instructions");
+
+        // Sound effects
+        const correctSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3'); // Correct answer sound
+        const incorrectSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3'); // Incorrect answer sound
+        const startSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'); // Game start sound
+        const endSound = new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3'); // Game end sound
+
+        // Scramble a word
+        function scrambleWord(word) {
+            let letters = word.split("");
+            for (let i = letters.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [letters[i], letters[j]] = [letters[j], letters[i]];
+            }
+            return letters.join("");
+        }
+
+        // Start the timer
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            timeLeftElement.textContent = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                timeLeftElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    messageElement.textContent = "Time's up!";
+                    messageElement.style.color = "red";
+                    setTimeout(nextQuestion, 1000);
+                }
+            }, 1000);
+        }
+
+        // Start a new game
+        function newGame() {
+            if (questionNumber > 10) {
+                endGame();
+                return;
+            }
+            // Ensure unique words
+            let availableWords = words.filter(w => !usedWords.includes(w.word));
+            if (availableWords.length === 0) {
+                endGame();
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * availableWords.length);
+            currentWord = availableWords[randomIndex].word;
+            usedWords.push(currentWord);
+            scrambledWord = scrambleWord(currentWord);
+            scrambledWordElement.textContent = scrambledWord;
+            // Show hint by default
+            const wordData = words.find(w => w.word === currentWord);
+            hintElement.textContent = `Hint: ${wordData.hint}`;
+            userInput.value = "";
+            messageElement.textContent = "";
+            questionNumberElement.textContent = questionNumber;
+            userInput.disabled = false;
+            submitBtn.disabled = false;
+            skipWordBtn.disabled = false;
+            pauseBtn.disabled = false;
+            // Save question to history
+            questionHistory.push({ question: questionNumber, word: currentWord, hint: wordData.hint });
+            startTimer();
+        }
+
+        // Move to the next question
+        function nextQuestion() {
+            questionNumber++;
+            newGame();
+        }
+
+        // Pause the game
+        function pauseGame() {
+            clearInterval(timer);
+            gameElements.style.display = "none";
+            pauseElements.style.display = "block";
+        }
+
+        // Resume the game
+        function resumeGame() {
+            pauseElements.style.display = "none";
+            gameElements.style.display = "block";
+            startTimer();
+        }
+
+        // End the game and show scorecard
+        function endGame() {
+            clearInterval(timer);
+            userInput.disabled = true;
+            submitBtn.disabled = true;
+            skipWordBtn.disabled = true;
+            pauseBtn.disabled = true;
+            // Hide game elements and instructions
+            gameElements.style.display = "none";
+            pauseElements.style.display = "none";
+            gameInstructions.style.display = "none";
+            // Show scorecard
+            const percentage = (correctAnswers / 10) * 100;
+            let performanceMessage = "";
+            if (percentage >= 80) {
+                performanceMessage = "You're a true Swiftie superstar! 🌟";
+            } else if (percentage >= 50) {
+                performanceMessage = "Great effort, Swiftie! Keep shining! ✨";
+            } else {
+                performanceMessage = "Don't worry, practice makes perfect! Try again! 💖";
+            }
+            scorecardElement.innerHTML = `
+                <h3>Game Over!</h3>
+                <p>Final Score: ${score}/100</p>
+                <p>Correct Answers: ${correctAnswers}/10</p>
+                <p>Percentage: ${percentage.toFixed(0)}%</p>
+                <p>${performanceMessage}</p>
+                <button id="restart-btn">Play Again</button>
+                <button id="show-answers-btn">Show Answers</button>
+            `;
+            scorecardElement.style.display = "block";
+            endSound.play();
+            document.getElementById("restart-btn").addEventListener("click", restartGame);
+            document.getElementById("show-answers-btn").addEventListener("click", showAnswers);
+        }
+
+        // Show answers
+        function showAnswers() {
+            scorecardElement.style.display = "none";
+            answersElement.style.display = "block";
+            let answersHtml = "<h3>Answers</h3><ul>";
+            questionHistory.forEach(q => {
+                answersHtml += `<li>Question ${q.question}: ${q.word} (Hint: ${q.hint})</li>`;
+            });
+            answersHtml += "</ul><button id='back-btn'>Back</button>";
+            answersElement.innerHTML = answersHtml;
+            document.getElementById("back-btn").addEventListener("click", () => {
+                answersElement.style.display = "none";
+                scorecardElement.style.display = "block";
+            });
+        }
+
+        // Restart the game
+        function restartGame() {
+            score = 0;
+            questionNumber = 1;
+            correctAnswers = 0;
+            usedWords = [];
+            questionHistory = [];
+            scoreElement.textContent = score;
+            // Hide scorecard and answers, show instructions and Play Now button
+            scorecardElement.style.display = "none";
+            answersElement.style.display = "none";
+            gameInstructions.style.display = "block";
+            playNowBtn.style.display = "block";
+            gameElements.style.display = "none";
+            pauseElements.style.display = "none";
+        }
+
+        // Start game on Play Now click
+        playNowBtn.addEventListener("click", () => {
+            playNowBtn.style.display = "none";
+            gameElements.style.display = "block";
+            startSound.play();
+            newGame();
+        });
+
+        // Pause button
+        pauseBtn.addEventListener("click", pauseGame);
+
+        // Continue button
+        continueBtn.addEventListener("click", resumeGame);
+
+        // Check the user's guess
+        submitBtn.addEventListener("click", () => {
+            const guess = userInput.value.toLowerCase().trim();
+            if (guess === currentWord) {
+                score += 10;
+                correctAnswers++;
+                scoreElement.textContent = score;
+                messageElement.textContent = "Correct! Great job!";
+                messageElement.style.color = "green";
+                correctSound.play();
+                clearInterval(timer);
+                setTimeout(nextQuestion, 1000);
+            } else {
+                messageElement.textContent = "Incorrect. Try again!";
+                messageElement.style.color = "red";
+                incorrectSound.play();
+            }
+        });
+
+        // Skip to new word (counts as a question)
+        skipWordBtn.addEventListener("click", () => {
+            clearInterval(timer);
+            nextQuestion();
+        });
+    </script>
+</body>
+</html>
