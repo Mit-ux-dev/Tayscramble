@@ -10,9 +10,9 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to bottom, #f9e9ec, #fff); /* Subtle gradient background */
+            background: linear-gradient(to bottom, #f9e9ec, #fff);
             color: #333;
-            min-height: 100vh; /* Ensure body takes full viewport height */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
@@ -23,18 +23,18 @@
             padding: 20px 0;
             background: linear-gradient(to bottom, #ff6f91, #f9e9ec);
             margin-bottom: 10px;
-            border-bottom: 2px solid #ff6f91; /* Decorative border */
+            border-bottom: 2px solid #ff6f91;
         }
 
         header h1 {
-            font-size: 48px; /* Increased size */
+            font-size: 48px;
             color: #fff;
             margin: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         header p {
-            font-size: 20px; /* Increased size */
+            font-size: 20px;
             color: #fff;
             margin: 5px 0 0;
         }
@@ -43,8 +43,8 @@
         section {
             padding: 20px;
             margin: 0 auto;
-            max-width: 800px;
-            flex: 1; /* Allow section to grow */
+            max-width: 100%; /* Ensure section fits viewport */
+            flex: 1;
         }
 
         section h2 {
@@ -58,14 +58,17 @@
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             text-align: center;
-            width: 600px; /* Fixed width */
-            min-height: 400px; /* Fixed minimum height */
+            width: 90%; /* Responsive width */
+            max-width: 600px; /* Max width for larger screens */
+            min-height: 300px; /* Smaller min-height for mobile */
+            margin: 0 auto;
+            box-sizing: border-box; /* Include padding/border in size */
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border: 1px solid #ff6f91; /* Decorative border */
+            border: 1px solid #ff6f91;
         }
 
         #game-instructions {
@@ -77,21 +80,25 @@
             font-size: 24px;
             color: #ff6f91;
             margin: 10px 0;
+            word-wrap: break-word; /* Prevent overflow */
         }
 
         #hint {
             font-size: 18px;
-            color: #333; /* Black font for hint */
+            color: #333;
             margin: 10px 0;
+            word-wrap: break-word;
         }
 
         #user-input {
             padding: 10px;
             font-size: 16px;
-            width: 200px;
+            width: 100%;
+            max-width: 200px; /* Limit width on larger screens */
             border: 2px solid #ff6f91;
             border-radius: 5px;
             margin: 10px 0;
+            box-sizing: border-box;
         }
 
         #submit-btn, #skip-word-btn, #play-now-btn, #restart-btn, #pause-btn, #continue-btn, #show-answers-btn, #back-btn {
@@ -103,12 +110,14 @@
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s; /* Smooth hover effect */
+            transition: background-color 0.3s, transform 0.1s;
+            width: auto;
+            display: inline-block;
         }
 
         #submit-btn:hover, #skip-word-btn:hover, #play-now-btn:hover, #restart-btn:hover, #pause-btn:hover, #continue-btn:hover, #show-answers-btn:hover, #back-btn:hover {
             background-color: #e55a7a;
-            transform: scale(1.05); /* Slight zoom on hover */
+            transform: scale(1.05);
         }
 
         #message {
@@ -148,13 +157,58 @@
             background-color: #ff6f91;
             color: white;
             width: 100%;
-            margin-top: auto; /* Push footer to bottom */
-            border-top: 2px solid #fff; /* Decorative border */
+            margin-top: auto;
+            border-top: 2px solid #fff;
         }
 
         /* Hide game elements initially */
         #game-elements, #scorecard, #pause-elements, #answers {
             display: none;
+        }
+
+        /* Media Queries for Mobile */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 36px; /* Smaller title on mobile */
+            }
+
+            header p {
+                font-size: 16px;
+            }
+
+            section h2 {
+                font-size: 24px;
+            }
+
+            #game {
+                padding: 15px;
+                min-height: 250px; /* Smaller height for mobile */
+            }
+
+            #game-instructions {
+                font-size: 14px;
+            }
+
+            #scrambled-word {
+                font-size: 20px;
+            }
+
+            #hint {
+                font-size: 16px;
+            }
+
+            #user-input {
+                max-width: 100%; /* Full width on mobile */
+            }
+
+            #submit-btn, #skip-word-btn, #play-now-btn, #restart-btn, #pause-btn, #continue-btn, #show-answers-btn, #back-btn {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+
+            #message, #score, #timer, #question-counter, #scorecard, #answers {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -297,7 +351,7 @@
             { word: "thislovely", hint: "Song from 1989 about rekindled romance" },
             { word: "getawaycar", hint: "Song from Reputation about a dramatic escape" },
             { word: "dancingwithourhandstied", hint: "Song from Reputation about secret love" },
-            { word: "butterfly", hint: "Symbol often associated with Lover era" },
+            { word: "butterfly", hint: "Symbol associated with Lover era" },
             { word: "oliviabenson", hint: "Name of another one of Taylor's cats" }
         ];
 
@@ -309,7 +363,7 @@
         let timer;
         let timeLeft = 60;
         let usedWords = [];
-        let questionHistory = []; // Track questions and answers
+        let questionHistory = [];
 
         // Elements
         const gameElements = document.getElementById("game-elements");
@@ -331,10 +385,10 @@
         const gameInstructions = document.getElementById("game-instructions");
 
         // Sound effects
-        const correctSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3'); // Correct answer sound
-        const incorrectSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3'); // Incorrect answer sound
-        const startSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'); // Game start sound
-        const endSound = new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3'); // Game end sound
+        const correctSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        const incorrectSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        const startSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+        const endSound = new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3');
 
         // Scramble a word
         function scrambleWord(word) {
@@ -369,7 +423,6 @@
                 endGame();
                 return;
             }
-            // Ensure unique words
             let availableWords = words.filter(w => !usedWords.includes(w.word));
             if (availableWords.length === 0) {
                 endGame();
@@ -380,7 +433,6 @@
             usedWords.push(currentWord);
             scrambledWord = scrambleWord(currentWord);
             scrambledWordElement.textContent = scrambledWord;
-            // Show hint by default
             const wordData = words.find(w => w.word === currentWord);
             hintElement.textContent = `Hint: ${wordData.hint}`;
             userInput.value = "";
@@ -390,7 +442,6 @@
             submitBtn.disabled = false;
             skipWordBtn.disabled = false;
             pauseBtn.disabled = false;
-            // Save question to history
             questionHistory.push({ question: questionNumber, word: currentWord, hint: wordData.hint });
             startTimer();
         }
@@ -422,11 +473,9 @@
             submitBtn.disabled = true;
             skipWordBtn.disabled = true;
             pauseBtn.disabled = true;
-            // Hide game elements and instructions
             gameElements.style.display = "none";
             pauseElements.style.display = "none";
             gameInstructions.style.display = "none";
-            // Show scorecard
             const percentage = (correctAnswers / 10) * 100;
             let performanceMessage = "";
             if (percentage >= 80) {
@@ -434,7 +483,7 @@
             } else if (percentage >= 50) {
                 performanceMessage = "Great effort, Swiftie! Keep shining! ✨";
             } else {
-                performanceMessage = "Don't worry, practice makes perfect! Try again! 💖";
+                performanceMessage = "Don't worry, practice makes perfect! Try nuevamente! 💖";
             }
             scorecardElement.innerHTML = `
                 <h3>Game Over!</h3>
@@ -475,7 +524,6 @@
             usedWords = [];
             questionHistory = [];
             scoreElement.textContent = score;
-            // Hide scorecard and answers, show instructions and Play Now button
             scorecardElement.style.display = "none";
             answersElement.style.display = "none";
             gameInstructions.style.display = "block";
